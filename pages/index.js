@@ -8,7 +8,7 @@ const inter = Inter({ subsets: ['latin'] })
 // Makes any requests to any services gathers up all that data and
 // then returns an object that has props in it and props
 // are sent to react component which then renders them
-export async function getServerSideProps() {
+export async function getStaticProps() {
   const res = await fetch(
     'https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json'
   )

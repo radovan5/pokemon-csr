@@ -3,7 +3,24 @@ import React from 'react'
 import Head from 'next/head'
 import styles from '../../styles/Details.module.css'
 
-export async function getServerSideProps({ params }) {
+// Returns an object that has a list of all of the different paths that which should be generated
+export async function getStaticPaths() {
+  const res = await fetch(
+    'https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json'
+  )
+  const pokemon = await res.json()
+
+  return {
+    paths: pokemon.map((pokemon) => ({
+      params: {
+        id: pokemon.id.toString(),
+      },
+    })),
+    fallback: false,
+  }
+}
+
+export async function getStaticProps({ params }) {
   const res = await fetch(
     `https://jherr-pokemon.s3.us-west-1.amazonaws.com/pokemon/${params.id}.json`
   )
@@ -21,7 +38,9 @@ export default function Details({ pokemon }) {
         <title>{pokemon.name}</title>
       </Head>
       <div>
-        <a href='/'>Back</a>
+        <a className='button' href='/'>
+          Back
+        </a>
       </div>
       <div className={styles.layout}>
         <div>
