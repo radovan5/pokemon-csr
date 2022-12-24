@@ -1,29 +1,32 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import Head from 'next/head'
 import { Inter } from '@next/font/google'
 import styles from '../styles/Home.module.css'
 
 const inter = Inter({ subsets: ['latin'] })
 
-export default function Home() {
-  const [pokemon, setPokemon] = useState([])
+// Makes any requests to any services gathers up all that data and
+// then returns an object that has props in it and props
+// are sent to react component which then renders them
+export async function getServerSideProps() {
+  const res = await fetch(
+    'https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json'
+  )
+  return {
+    props: {
+      pokemon: await res.json(),
+    },
+  }
+}
 
-  useEffect(() => {
-    async function getPokemon() {
-      const res = await fetch(
-        'https://jherr-pokemon.s3.us-west-1.amazonaws.com/index.json'
-      )
-      setPokemon(await res.json())
-    }
-    getPokemon()
-  }, [])
-
+export default function Home({ pokemon }) {
   return (
     <div className={styles.container}>
       <Head>
         <title>Pokemon List</title>
         <meta name='viewport' content='width=device-width, initial-scale=1' />
       </Head>
+      <h2>Pokemon List</h2>
       <div className={styles.grid}>
         {pokemon.map((pokemon) => (
           <div className={styles.card} key={pokemon.id}>
